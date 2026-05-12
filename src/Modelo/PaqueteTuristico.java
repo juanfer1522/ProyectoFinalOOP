@@ -6,41 +6,121 @@ package Modelo;
 
 import java.util.ArrayList;
 
-/**
- *
- * @author Juanfer
- */
+import Modelo.Destino;
+
 public abstract class PaqueteTuristico {
+
     protected String codigo;
+
+    // nombre minimo 10 caracteres
     protected String nombre;
+
+    // ej: negocios, recreación, educativo, ecológico
     protected String tipologiaTurismo;
+
+    // descripcion maximo 500 caracteres
     protected String descripcion;
+
+    // lugar de partida ej: Bogotá D.C.
     protected String origen;
-    protected ArrayList<Destino> susDestino;
+
+    protected ArrayList<Destino> susDestinos;
+
+    // si incluye hotel o no
+    // por defecto incluido
     protected boolean hotel;
+
+    // si incluye alimentacion o no
+    // por defecto incluido
     protected boolean alimentacion;
+
+    // si la alimentacion es completa
+    // o solo desayuno
     protected boolean alimentacionTodo;
+
+    // si incluye vuelo o no
+    // por defecto incluido
     protected boolean vuelo;
+
+    // si incluye asistencia o no
+    // por defecto NO incluida
     protected boolean asistencia;
+
+    // tarifa mayor que cero
     protected int tarifaDia;
-    protected int cantidadIUnidades;
 
-    public PaqueteTuristico(String codigo, String nombre, String tipologiaTurismo, String descripcion, String origen, ArrayList<Destino> susDestino, boolean hotel, boolean alimentacion, boolean alimentacionTodo, boolean vuelo, boolean asistencia, int tarifaDia, int cantidadIUnidades) {
+    // minimo 1 reserva
+    protected int cantidadUnidades;
+
+    public PaqueteTuristico(
+            String codigo,
+            String nombre,
+            String tipologiaTurismo,
+            String descripcion,
+            String origen,
+            ArrayList<Destino> susDestinos,
+            boolean hotel,
+            boolean alimentacion,
+            boolean alimentacionTodo,
+            boolean vuelo,
+            boolean asistencia,
+            int tarifaDia,
+            int cantidadUnidades) {
+
         this.codigo = codigo;
-        this.nombre = nombre;
-        this.tipologiaTurismo = tipologiaTurismo;
-        this.descripcion = descripcion;
-        this.origen = origen;
-        this.susDestino = susDestino;
-        this.hotel = hotel;
-        this.alimentacion = alimentacion;
-        this.alimentacionTodo = alimentacionTodo;
-        this.vuelo = vuelo;
-        this.asistencia = asistencia;
-        this.tarifaDia = tarifaDia;
-        this.cantidadIUnidades = cantidadIUnidades;
-    }
 
+        // nombre:
+        // minimo 10 caracteres
+
+        if (nombre.length() >= 10) {
+            this.nombre = nombre;
+        }
+
+        this.tipologiaTurismo = tipologiaTurismo;
+
+        // descripcion:
+        // maximo 500 caracteres
+        if (descripcion.length() <= 500) {
+            this.descripcion = descripcion;
+        }
+
+        this.origen = origen;
+
+        this.susDestinos = susDestinos;
+
+        // hotel:
+        // por defecto incluido
+        this.hotel = hotel;
+
+        // alimentacion:
+        // por defecto incluida
+        this.alimentacion = alimentacion;
+
+        // alimentacionTodo:
+        // todo o solo desayuno
+        this.alimentacionTodo = alimentacionTodo;
+
+        // vuelo:
+        // por defecto incluido
+        this.vuelo = vuelo;
+
+        // asistencia:
+        // por defecto NO incluida
+        this.asistencia = asistencia;
+
+        // tarifaDia:
+        // mayor que cero
+        if (tarifaDia > 0) {
+            this.tarifaDia = tarifaDia;
+        }
+
+        // cantidadUnidades:
+        // minimo 1
+        if (cantidadUnidades >= 1) {
+            this.cantidadUnidades = cantidadUnidades;
+        }
+    }
+    
     public String getCodigo() {
         return codigo;
     }
@@ -53,8 +133,12 @@ public abstract class PaqueteTuristico {
         return nombre;
     }
 
+    // minimo 10 caracteres
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+
+        if (nombre.length() >= 10) {
+            this.nombre = nombre;
+        }
     }
 
     public String getTipologiaTurismo() {
@@ -69,8 +153,12 @@ public abstract class PaqueteTuristico {
         return descripcion;
     }
 
+    // maximo 500 caracteres
     public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+
+        if (descripcion.length() <= 500) {
+            this.descripcion = descripcion;
+        }
     }
 
     public String getOrigen() {
@@ -81,12 +169,12 @@ public abstract class PaqueteTuristico {
         this.origen = origen;
     }
 
-    public ArrayList<Destino> getSusDestino() {
-        return susDestino;
+    public ArrayList<Destino> getSusDestinos() {
+        return susDestinos;
     }
 
-    public void setSusDestino(ArrayList<Destino> susDestino) {
-        this.susDestino = susDestino;
+    public void setSusDestinos(ArrayList<Destino> susDestinos) {
+        this.susDestinos = susDestinos;
     }
 
     public boolean isHotel() {
@@ -133,23 +221,70 @@ public abstract class PaqueteTuristico {
         return tarifaDia;
     }
 
+    // tarifa mayor que cero
     public void setTarifaDia(int tarifaDia) {
-        this.tarifaDia = tarifaDia;
+
+        if (tarifaDia > 0) {
+            this.tarifaDia = tarifaDia;
+        }
     }
 
-    public int getCantidadIUnidades() {
-        return cantidadIUnidades;
+    public int getCantidadUnidades() {
+        return cantidadUnidades;
     }
 
-    public void setCantidadIUnidades(int cantidadIUnidades) {
-        this.cantidadIUnidades = cantidadIUnidades;
+    // minimo 1 reserva
+    public void setCantidadUnidades(int cantidadUnidades) {
+
+        if (cantidadUnidades >= 1) {
+            this.cantidadUnidades = cantidadUnidades;
+        }
+    }
+
+    // calcularDuracionTotalDias
+    // sumatoria dias permanencia destinos
+    public int calcularDuracionTotalDias() {
+
+        int suma = 0;
+
+        for (Destino d : susDestinos) {
+
+            suma += d.getDiasPermanencia();
+        }
+
+        return suma;
+    }
+
+    // calcularValorUnidad
+    // depende del tipo de paquete
+    // destino unico o multiple
+    public abstract int calcularValorUnidad();
+
+    // calcularValorTotal
+    // valor unidad * cantidad unidades
+    public int calcularValorTotal() {
+
+        return calcularValorUnidad() * cantidadUnidades;
     }
 
     @Override
     public String toString() {
-        return "PaqueteTuristico{" + "codigo=" + codigo + ", nombre=" + nombre + ", tipologiaTurismo=" + tipologiaTurismo + ", descripcion=" + descripcion + ", origen=" + origen + ", susDestino=" + susDestino + ", hotel=" + hotel + ", alimentacion=" + alimentacion + ", alimentacionTodo=" + alimentacionTodo + ", vuelo=" + vuelo + ", asistencia=" + asistencia + ", tarifaDia=" + tarifaDia + ", cantidadIUnidades=" + cantidadIUnidades + '}';
+
+        return "PaqueteTuristico{"
+                + "codigo=" + codigo
+                + ", nombre=" + nombre
+                + ", tipologiaTurismo=" + tipologiaTurismo
+                + ", descripcion=" + descripcion
+                + ", origen=" + origen
+                + ", susDestinos=" + susDestinos
+                + ", hotel=" + hotel
+                + ", alimentacion=" + alimentacion
+                + ", alimentacionTodo=" + alimentacionTodo
+                + ", vuelo=" + vuelo
+                + ", asistencia=" + asistencia
+                + ", tarifaDia=" + tarifaDia
+                + ", cantidadUnidades=" + cantidadUnidades
+                + '}';
     }
-    
-    
-    
 }
+
