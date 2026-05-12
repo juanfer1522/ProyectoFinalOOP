@@ -9,8 +9,10 @@ package Modelo;
  *
  * @author Juanfer
  */
+
+
 public class Cliente {
-    
+
     private char tipoIdentificacion;
     private String numeroIdentificacion;
     private boolean empresa;
@@ -20,23 +22,31 @@ public class Cliente {
     private String nombreContacto;
     private double porcentajeDescuento;
 
-    public Cliente(char tipoIdentificacion, String numeroIdentificacion, boolean empresa, String nombre, String email, String telefono, String nombreContacto, double porcentajeDescuento) {
-        this.tipoIdentificacion = tipoIdentificacion;
-        this.numeroIdentificacion = numeroIdentificacion;
-        this.empresa = empresa;
-        this.nombre = nombre;
-        this.email = email;
-        this.telefono = telefono;
-        this.nombreContacto = nombreContacto;
-        this.porcentajeDescuento = porcentajeDescuento;
-    }
+    // Constructor
+    public Cliente(char tipoIdentificacion, String numeroIdentificacion,
+                   boolean empresa, String nombre, String email,
+                   String telefono, String nombreContacto,
+                   double porcentajeDescuento){}
+
+
+
+   
 
     public char getTipoIdentificacion() {
         return tipoIdentificacion;
     }
 
     public void setTipoIdentificacion(char tipoIdentificacion) {
-        this.tipoIdentificacion = tipoIdentificacion;
+
+        tipoIdentificacion = Character.toUpperCase(tipoIdentificacion);
+
+        if (tipoIdentificacion == 'C' || tipoIdentificacion == 'N') {
+            this.tipoIdentificacion = tipoIdentificacion;
+        } else {
+            throw new IllegalArgumentException(
+                "El tipo debe ser C (cédula) o N (NIT)"
+            );
+        }
     }
 
     public String getNumeroIdentificacion() {
@@ -44,6 +54,32 @@ public class Cliente {
     }
 
     public void setNumeroIdentificacion(String numeroIdentificacion) {
+
+        
+        if (!numeroIdentificacion.matches("\\d+")) {
+            throw new IllegalArgumentException(
+                "La identificación solo debe contener números"
+            );
+        }
+
+        
+        if (tipoIdentificacion == 'C') {
+
+            if (numeroIdentificacion.length() < 6) {
+                throw new IllegalArgumentException(
+                    "La cédula debe tener mínimo 6 dígitos"
+                );
+            }
+
+        } else if (tipoIdentificacion == 'N') {
+
+            if (numeroIdentificacion.length() != 9) {
+                throw new IllegalArgumentException(
+                    "El NIT debe tener exactamente 9 dígitos"
+                );
+            }
+        }
+
         this.numeroIdentificacion = numeroIdentificacion;
     }
 
@@ -60,6 +96,13 @@ public class Cliente {
     }
 
     public void setNombre(String nombre) {
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                "El nombre no puede estar vacío"
+            );
+        }
+
         this.nombre = nombre;
     }
 
@@ -68,6 +111,13 @@ public class Cliente {
     }
 
     public void setEmail(String email) {
+
+        if (!email.contains("@")) {
+            throw new IllegalArgumentException(
+                "Email inválido"
+            );
+        }
+
         this.email = email;
     }
 
@@ -76,6 +126,14 @@ public class Cliente {
     }
 
     public void setTelefono(String telefono) {
+
+       
+        if (!telefono.matches("\\d+")) {
+            throw new IllegalArgumentException(
+                "El teléfono solo debe contener números"
+            );
+        }
+
         this.telefono = telefono;
     }
 
@@ -99,8 +157,4 @@ public class Cliente {
     public String toString() {
         return "Cliente{" + "tipoIdentificacion=" + tipoIdentificacion + ", numeroIdentificacion=" + numeroIdentificacion + ", empresa=" + empresa + ", nombre=" + nombre + ", email=" + email + ", telefono=" + telefono + ", nombreContacto=" + nombreContacto + ", porcentajeDescuento=" + porcentajeDescuento + '}';
     }
-    
-    
-    
-    
 }
