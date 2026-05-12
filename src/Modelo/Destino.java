@@ -18,7 +18,7 @@ public class Destino {
 
     public Destino(String nombreLugar, int diasPermanencia, LinkedList<String> atractivos, boolean atractivosIncluidos) {
         this.nombreLugar = nombreLugar;
-        this.diasPermanencia = diasPermanencia;
+        setDiasPermanencia(diasPermanencia);
         this.atractivos = atractivos;
         this.atractivosIncluidos = atractivosIncluidos;
     }
@@ -36,7 +36,11 @@ public class Destino {
     }
 
     public void setDiasPermanencia(int diasPermanencia) {
+        if (diasPermanencia >= 1) {
         this.diasPermanencia = diasPermanencia;
+    } else {
+            this.diasPermanencia = 1;
+        }
     }
 
     public LinkedList<String> getAtractivos() {
