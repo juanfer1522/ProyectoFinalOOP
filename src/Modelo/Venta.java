@@ -61,7 +61,7 @@ public class Venta {
     public int calcularCantidadTotalUnidadesPaquetes() {
         int total = 0;
         for (PaqueteTuristico paquete : susPaquetesTuristicos) {
-            total += paquete.getUnidades();
+            total += paquete.getCantidadUnidades();
         }
         return total;
     }
@@ -71,8 +71,8 @@ public class Venta {
      */
 public double calcularValorTotalPaquetes (){
     double total = 0;
-    for (PaqueteTuristico paquete : susPaqutesTuristicos){
-        total += paquete.calcularValotTotal(); // método de PaqueteTuristico
+    for (PaqueteTuristico paquete : susPaquetesTuristicos){
+        total += paquete.calcularValorTotal(); // método de PaqueteTuristico
     }
     return total;
 }
