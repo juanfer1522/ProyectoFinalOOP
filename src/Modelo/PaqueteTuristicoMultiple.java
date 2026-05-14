@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author Juanfer
  */
-public class PaqueteTuristicoMultiple extends PaqueteTuristico{
+public final class PaqueteTuristicoMultiple extends PaqueteTuristico{
     
     private String obsequio;
 
@@ -18,6 +18,23 @@ public class PaqueteTuristicoMultiple extends PaqueteTuristico{
         super(codigo, nombre, tipologiaTurismo, descripcion, origen, susDestino, hotel, alimentacion, alimentacionTodo, vuelo, asistencia, tarifaDia, cantidadIUnidades);
         this.obsequio = obsequio;
     }
+    
+    @Override
+    public int calcularValorUnidad(){
+        int valorBase = this.tarifaDia *  this.calcularDuracionTotalDias();
+        int incremento = (this.tarifaDia * this.cantidadUnidades) / 100;
+        return valorBase + incremento;
+    }
+    
+    public Destino obtenerDestinoInicial() {
+        return this.susDestinos.get(0);
+    }
+    
+    public Destino obtenerDestinoFinal(){
+        return this.susDestinos.get(this.susDestinos.size()-1);
+    }
+    
+    
 
     @Override
     public String toString() {

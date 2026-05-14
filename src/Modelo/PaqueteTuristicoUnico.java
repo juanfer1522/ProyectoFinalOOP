@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author Juanfer
  */
-public  class PaqueteTuristicoUnico extends PaqueteTuristico {
+public final class PaqueteTuristicoUnico extends PaqueteTuristico {
     private String nombreHotel;
     private String tipoDesayuno;
 
@@ -41,5 +41,8 @@ public  class PaqueteTuristicoUnico extends PaqueteTuristico {
         return "PaqueteTuristicoUnico{" + "nombreHotel=" + nombreHotel + ", tipoDesayuno=" + tipoDesayuno + '}';
     }
     
-    
+    @Override  
+    public int calcularValorUnidad (){
+        return this.tarifaDia * this.calcularDuracionTotalDias();
+    }
 }
