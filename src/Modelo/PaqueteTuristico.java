@@ -4,6 +4,11 @@
  */
 package Modelo;
 
+/**
+ *
+ * @author Samuel mejia 
+ */
+
 import java.util.ArrayList;
 
 import Modelo.Destino;
@@ -69,20 +74,11 @@ public abstract class PaqueteTuristico {
 
         this.codigo = codigo;
 
-        // nombre:
-        // minimo 10 caracteres
-
-        if (nombre.length() >= 10) {
-            this.nombre = nombre;
-        }
+        setNombre(nombre);
 
         this.tipologiaTurismo = tipologiaTurismo;
 
-        // descripcion:
-        // maximo 500 caracteres
-        if (descripcion.length() <= 500) {
-            this.descripcion = descripcion;
-        }
+        setDescripcion(descripcion);
 
         this.origen = origen;
 
@@ -108,24 +104,23 @@ public abstract class PaqueteTuristico {
         // por defecto NO incluida
         this.asistencia = asistencia;
 
-        // tarifaDia:
-        // mayor que cero
-        if (tarifaDia > 0) {
-            this.tarifaDia = tarifaDia;
-        }
+        setTarifaDia(tarifaDia);
 
-        // cantidadUnidades:
-        // minimo 1
-        if (cantidadUnidades >= 1) {
-            this.cantidadUnidades = cantidadUnidades;
-        }
+        setCantidadUnidades(cantidadUnidades);
     }
-    
+
     public String getCodigo() {
         return codigo;
     }
 
     public void setCodigo(String codigo) {
+
+        if (codigo == null || codigo.trim().isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "El código no puede estar vacío.");
+        }
+
         this.codigo = codigo;
     }
 
@@ -136,9 +131,13 @@ public abstract class PaqueteTuristico {
     // minimo 10 caracteres
     public void setNombre(String nombre) {
 
-        if (nombre.length() >= 10) {
-            this.nombre = nombre;
+        if (nombre == null || nombre.trim().length() < 10) {
+
+            throw new IllegalArgumentException(
+                    "El nombre debe tener mínimo 10 caracteres.");
         }
+
+        this.nombre = nombre;
     }
 
     public String getTipologiaTurismo() {
@@ -146,6 +145,14 @@ public abstract class PaqueteTuristico {
     }
 
     public void setTipologiaTurismo(String tipologiaTurismo) {
+
+        if (tipologiaTurismo == null
+                || tipologiaTurismo.trim().isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "La tipología de turismo no puede estar vacía.");
+        }
+
         this.tipologiaTurismo = tipologiaTurismo;
     }
 
@@ -156,9 +163,19 @@ public abstract class PaqueteTuristico {
     // maximo 500 caracteres
     public void setDescripcion(String descripcion) {
 
-        if (descripcion.length() <= 500) {
-            this.descripcion = descripcion;
+        if (descripcion == null || descripcion.trim().isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "La descripción no puede estar vacía.");
         }
+
+        if (descripcion.length() > 500) {
+
+            throw new IllegalArgumentException(
+                    "La descripción no puede superar los 500 caracteres.");
+        }
+
+        this.descripcion = descripcion;
     }
 
     public String getOrigen() {
@@ -166,6 +183,13 @@ public abstract class PaqueteTuristico {
     }
 
     public void setOrigen(String origen) {
+
+        if (origen == null || origen.trim().isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "El origen no puede estar vacío.");
+        }
+
         this.origen = origen;
     }
 
@@ -174,6 +198,13 @@ public abstract class PaqueteTuristico {
     }
 
     public void setSusDestinos(ArrayList<Destino> susDestinos) {
+
+        if (susDestinos == null || susDestinos.isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "Debe existir mínimo un destino.");
+        }
+
         this.susDestinos = susDestinos;
     }
 
@@ -224,9 +255,13 @@ public abstract class PaqueteTuristico {
     // tarifa mayor que cero
     public void setTarifaDia(int tarifaDia) {
 
-        if (tarifaDia > 0) {
-            this.tarifaDia = tarifaDia;
+        if (tarifaDia <= 0) {
+
+            throw new IllegalArgumentException(
+                    "La tarifa por día debe ser mayor que 0.");
         }
+
+        this.tarifaDia = tarifaDia;
     }
 
     public int getCantidadUnidades() {
@@ -236,9 +271,13 @@ public abstract class PaqueteTuristico {
     // minimo 1 reserva
     public void setCantidadUnidades(int cantidadUnidades) {
 
-        if (cantidadUnidades >= 1) {
-            this.cantidadUnidades = cantidadUnidades;
+        if (cantidadUnidades < 1) {
+
+            throw new IllegalArgumentException(
+                    "La cantidad de unidades debe ser mínimo 1.");
         }
+
+        this.cantidadUnidades = cantidadUnidades;
     }
 
     // calcularDuracionTotalDias
