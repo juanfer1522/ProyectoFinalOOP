@@ -36,11 +36,11 @@ public class Destino {
     }
 
     public void setDiasPermanencia(int diasPermanencia) {
-        if (diasPermanencia >= 1) {
+        if (diasPermanencia < 1) {
+            throw new IllegalArgumentException("Dias de permanencia no validos, debe ser mayor o igual a 1");
+            }
         this.diasPermanencia = diasPermanencia;
-    } else {
-            this.diasPermanencia = 1;
-        }
+            
     }
 
     public LinkedList<String> getAtractivos() {
