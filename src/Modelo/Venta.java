@@ -4,10 +4,11 @@
  */
 package Modelo;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Venta {
+public class Venta implements Serializable {
     private int numero;
     private LocalDateTime fechaHoraGeneracion;
     private LocalDateTime fechaHoraActualizacion;
@@ -17,14 +18,14 @@ public class Venta {
 
     public Venta(int numero, Cliente suCliente, ArrayList<PaqueteTuristico> susPaquetesTuristicos) {
         this.numero = numero;
-        this.fechaHoraGeneracion = LocalDateTime.now();      // Tomada del sistema
-        this.fechaHoraActualizacion = LocalDateTime.now();   // Igual a generación al crear
+        this.fechaHoraGeneracion = LocalDateTime.now();      
+        this.fechaHoraActualizacion = LocalDateTime.now();   
         this.suCliente = suCliente;
         this.susPaquetesTuristicos = susPaquetesTuristicos;
-        this.estado = 'A';                                   // Valor por defecto
+        this.estado = 'A';                                   
     }
 
-    // ── Getters y Setters ───────────────────────────────────────────────────────
+    
 
     public int getNumero() { return numero; }
     public void setNumero(int numero) { this.numero = numero; }
@@ -49,15 +50,19 @@ public class Venta {
 
     public char getEstado() { return estado; }
     public void setEstado(char estado) {
+        estado = Character.toUpperCase(estado);
+
+        if (estado != 'A' && estado != 'P' && estado != 'C') {
+            throw new IllegalArgumentException("El estado debe ser A, P o C");
+        }
+
         this.estado = estado;
-        this.fechaHoraActualizacion = LocalDateTime.now();   // Se actualiza al cambiar estado
+        this.fechaHoraActualizacion = LocalDateTime.now();   
     }
 
-    // ── Métodos de cálculo ──────────────────────────────────────────────────────
+   
 
-    /**
-     * Retorna la sumatoria de las unidades de todos los paquetes incluidos.
-     */
+    
     public int calcularCantidadTotalUnidadesPaquetes() {
         int total = 0;
         for (PaqueteTuristico paquete : susPaquetesTuristicos) {
@@ -66,27 +71,25 @@ public class Venta {
         return total;
     }
 
-    /**
-     * Retornar la sumatoria del valor total de cada paquete incluido.
-     */
+   
 public double calcularValorTotalPaquetes (){
     double total = 0;
     for (PaqueteTuristico paquete : susPaquetesTuristicos){
-        total += paquete.calcularValorTotal(); // método de PaqueteTuristico
+        total += paquete.calcularValorTotal(); 
     }
     return total;
 }
 
-//Retorna el descuento: valor total de paquetes * porcentaje de descuento del cliente
+
  public double calcularValorDescuento() {
      return calcularValorTotalPaquetes() * suCliente.getPorcentajeDescuento();
  }
  
- //Retorna el valor a pagar: valor total de paquetes menos el descuento
+ 
  public double calcularValorTotalPagar(){
      return calcularValorTotalPaquetes() - calcularValorDescuento();
  }
-    // ── toString ────────────────────────────────────────────────────────────────
+    
 
     @Override
     public String toString() {

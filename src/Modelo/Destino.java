@@ -4,13 +4,14 @@
  */
 package Modelo;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
  *
  * @author Juanfer
  */
-public class Destino {
+public class Destino implements Serializable {
     private String nombreLugar;
     private int diasPermanencia;
     private LinkedList<String> atractivos;

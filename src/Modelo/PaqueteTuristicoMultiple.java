@@ -22,7 +22,7 @@ public final class PaqueteTuristicoMultiple extends PaqueteTuristico{
     @Override
     public int calcularValorUnidad(){
         int valorBase = this.tarifaDia *  this.calcularDuracionTotalDias();
-        int incremento = (this.tarifaDia * this.cantidadUnidades) / 100;
+        int incremento = (this.tarifaDia * this.susDestinos.size()) / 100;
         return valorBase + incremento;
     }
     

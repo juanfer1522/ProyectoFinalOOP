@@ -4,6 +4,8 @@
  */
 package Modelo;
 
+import java.io.Serializable;
+
 
 /**
  *
@@ -11,7 +13,7 @@ package Modelo;
  */
 
 
-public class Cliente {
+public class Cliente implements Serializable {
 
     private char tipoIdentificacion;
     private String numeroIdentificacion;
@@ -26,7 +28,16 @@ public class Cliente {
     public Cliente(char tipoIdentificacion, String numeroIdentificacion,
                    boolean empresa, String nombre, String email,
                    String telefono, String nombreContacto,
-                   double porcentajeDescuento){}
+                   double porcentajeDescuento){
+        setTipoIdentificacion(tipoIdentificacion);
+        setNumeroIdentificacion(numeroIdentificacion);
+        setEmpresa(empresa);
+        setNombre(nombre);
+        setEmail(email);
+        setTelefono(telefono);
+        setNombreContacto(nombreContacto);
+        setPorcentajeDescuento(porcentajeDescuento);
+    }
 
 
 
@@ -58,11 +69,9 @@ public class Cliente {
         
         if (!numeroIdentificacion.matches("\\d+")) {
             throw new IllegalArgumentException(
-                "La identificación solo debe contener números"
+                "La identificación debe contener numeros"
             );
         }
-
-        
         if (tipoIdentificacion == 'C') {
 
             if (numeroIdentificacion.length() < 6) {
@@ -75,7 +84,7 @@ public class Cliente {
 
             if (numeroIdentificacion.length() != 9) {
                 throw new IllegalArgumentException(
-                    "El NIT debe tener exactamente 9 dígitos"
+                    "El NIT debe tener   9 dígitos"
                 );
             }
         }
@@ -111,13 +120,6 @@ public class Cliente {
     }
 
     public void setEmail(String email) {
-
-        if (!email.contains("@")) {
-            throw new IllegalArgumentException(
-                "Email inválido"
-            );
-        }
-
         this.email = email;
     }
 
@@ -128,7 +130,7 @@ public class Cliente {
     public void setTelefono(String telefono) {
 
        
-        if (!telefono.matches("\\d+")) {
+        if (telefono == null || !telefono.matches("\\d+")) {
             throw new IllegalArgumentException(
                 "El teléfono solo debe contener números"
             );
@@ -142,6 +144,12 @@ public class Cliente {
     }
 
     public void setNombreContacto(String nombreContacto) {
+        if (nombreContacto == null || nombreContacto.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                "El nombre de contacto no puede estar vacio"
+            );
+        }
+
         this.nombreContacto = nombreContacto;
     }
 
@@ -150,6 +158,12 @@ public class Cliente {
     }
 
     public void setPorcentajeDescuento(double porcentajeDescuento) {
+        if (porcentajeDescuento < 0.0 || porcentajeDescuento > 70.0) {
+            throw new IllegalArgumentException(
+                "El porcentaje de descuento debe estar entre 0.0 y 70.0"
+            );
+        }
+
         this.porcentajeDescuento = porcentajeDescuento;
     }
 

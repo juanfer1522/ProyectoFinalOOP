@@ -4,6 +4,8 @@
  */
 package Modelo;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Samuel mejia 
@@ -13,95 +15,38 @@ import java.util.ArrayList;
 
 import Modelo.Destino;
 
-public abstract class PaqueteTuristico {
+public abstract class PaqueteTuristico implements Serializable {
 
     protected String codigo;
-
-    // nombre minimo 10 caracteres
     protected String nombre;
-
-    // ej: negocios, recreación, educativo, ecológico
     protected String tipologiaTurismo;
-
-    // descripcion maximo 500 caracteres
     protected String descripcion;
-
-    // lugar de partida ej: Bogotá D.C.
     protected String origen;
-
     protected ArrayList<Destino> susDestinos;
-
-    // si incluye hotel o no
-    // por defecto incluido
     protected boolean hotel;
-
-    // si incluye alimentacion o no
-    // por defecto incluido
     protected boolean alimentacion;
-
-    // si la alimentacion es completa
-    // o solo desayuno
     protected boolean alimentacionTodo;
-
-    // si incluye vuelo o no
-    // por defecto incluido
     protected boolean vuelo;
-
-    // si incluye asistencia o no
-    // por defecto NO incluida
     protected boolean asistencia;
-
-    // tarifa mayor que cero
     protected int tarifaDia;
-
-    // minimo 1 reserva
     protected int cantidadUnidades;
 
-    public PaqueteTuristico(
-            String codigo,
-            String nombre,
-            String tipologiaTurismo,
-            String descripcion,
-            String origen,
-            ArrayList<Destino> susDestinos,
-            boolean hotel,
-            boolean alimentacion,
-            boolean alimentacionTodo,
-            boolean vuelo,
-            boolean asistencia,
-            int tarifaDia,
-            int cantidadUnidades) {
+    public PaqueteTuristico(String codigo,String nombre,String tipologiaTurismo,String descripcion, String origen,
+            ArrayList<Destino> susDestinos, boolean hotel,boolean alimentacion,boolean alimentacionTodo,boolean vuelo,
+             boolean asistencia,int tarifaDia,int cantidadUnidades) {
 
-        this.codigo = codigo;
-
+        setCodigo(codigo);
         setNombre(nombre);
-
-        this.tipologiaTurismo = tipologiaTurismo;
-
+        setTipologiaTurismo(tipologiaTurismo);
         setDescripcion(descripcion);
+        setOrigen(origen);
+        setSusDestinos(susDestinos);
 
-        this.origen = origen;
-
-        this.susDestinos = susDestinos;
-
-        // hotel:
-        // por defecto incluido
         this.hotel = hotel;
-
-        // alimentacion:
-        // por defecto incluida
         this.alimentacion = alimentacion;
 
-        // alimentacionTodo:
-        // todo o solo desayuno
         this.alimentacionTodo = alimentacionTodo;
-
-        // vuelo:
-        // por defecto incluido
         this.vuelo = vuelo;
-
-        // asistencia:
-        // por defecto NO incluida
         this.asistencia = asistencia;
 
         setTarifaDia(tarifaDia);
@@ -160,19 +105,13 @@ public abstract class PaqueteTuristico {
         return descripcion;
     }
 
-    // maximo 500 caracteres
+ 
     public void setDescripcion(String descripcion) {
 
         if (descripcion == null || descripcion.trim().isEmpty()) {
 
             throw new IllegalArgumentException(
                     "La descripción no puede estar vacía.");
-        }
-
-        if (descripcion.length() > 500) {
-
-            throw new IllegalArgumentException(
-                    "La descripción no puede superar los 500 caracteres.");
         }
 
         this.descripcion = descripcion;
@@ -280,8 +219,7 @@ public abstract class PaqueteTuristico {
         this.cantidadUnidades = cantidadUnidades;
     }
 
-    // calcularDuracionTotalDias
-    // sumatoria dias permanencia destinos
+    // calcularDuracionTotalDias : sumatoria dias permanencia destinos
     public int calcularDuracionTotalDias() {
 
         int suma = 0;
@@ -294,9 +232,6 @@ public abstract class PaqueteTuristico {
         return suma;
     }
 
-    // calcularValorUnidad
-    // depende del tipo de paquete
-    // destino unico o multiple
     public abstract int calcularValorUnidad();
 
     // calcularValorTotal
@@ -326,4 +261,3 @@ public abstract class PaqueteTuristico {
                 + '}';
     }
 }
-
