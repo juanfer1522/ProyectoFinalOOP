@@ -120,6 +120,18 @@ public class Cliente implements Serializable {
     }
 
     public void setEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                "El email no puede estar vacio"
+            );
+        }
+
+        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$")) {
+            throw new IllegalArgumentException(
+                "El email no tiene un formato valido"
+            );
+        }
+
         this.email = email;
     }
 

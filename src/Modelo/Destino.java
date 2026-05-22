@@ -18,7 +18,7 @@ public class Destino implements Serializable {
     private boolean atractivosIncluidos;
 
     public Destino(String nombreLugar, int diasPermanencia, LinkedList<String> atractivos, boolean atractivosIncluidos) {
-        this.nombreLugar = nombreLugar;
+        setNombreLugar(nombreLugar);
         setDiasPermanencia(diasPermanencia);
         this.atractivos = atractivos;
         this.atractivosIncluidos = atractivosIncluidos;
@@ -29,6 +29,10 @@ public class Destino implements Serializable {
     }
 
     public void setNombreLugar(String nombreLugar) {
+        if (nombreLugar == null || nombreLugar.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del destino no puede estar vacio");
+        }
+
         this.nombreLugar = nombreLugar;
     }
 

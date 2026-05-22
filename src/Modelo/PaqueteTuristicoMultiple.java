@@ -16,6 +16,18 @@ public final class PaqueteTuristicoMultiple extends PaqueteTuristico{
 
     public PaqueteTuristicoMultiple(String obsequio, String codigo, String nombre, String tipologiaTurismo, String descripcion, String origen, ArrayList<Destino> susDestino, boolean hotel, boolean alimentacion, boolean alimentacionTodo, boolean vuelo, boolean asistencia, int tarifaDia, int cantidadIUnidades) {
         super(codigo, nombre, tipologiaTurismo, descripcion, origen, susDestino, hotel, alimentacion, alimentacionTodo, vuelo, asistencia, tarifaDia, cantidadIUnidades);
+        setObsequio(obsequio);
+    }
+
+    public String getObsequio() {
+        return obsequio;
+    }
+
+    public void setObsequio(String obsequio) {
+        if (obsequio == null || obsequio.trim().isEmpty()) {
+            throw new IllegalArgumentException("El obsequio no puede estar vacio");
+        }
+
         this.obsequio = obsequio;
     }
     
@@ -40,6 +52,5 @@ public final class PaqueteTuristicoMultiple extends PaqueteTuristico{
     public String toString() {
         return "PaqueteTuristicoMultiple{" + "obsequio=" + obsequio + '}';
     }
-    
-    
+       
 }

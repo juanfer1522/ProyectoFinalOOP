@@ -16,8 +16,8 @@ public final class PaqueteTuristicoUnico extends PaqueteTuristico {
 
     public PaqueteTuristicoUnico(String nombreHotel, String tipoDesayuno, String codigo, String nombre, String tipologiaTurismo, String descripcion, String origen, ArrayList<Destino> susDestino, boolean hotel, boolean alimentacion, boolean alimentacionTodo, boolean vuelo, boolean asistencia, int tarifaDia, int cantidadIUnidades) {
         super(codigo, nombre, tipologiaTurismo, descripcion, origen, susDestino, hotel, alimentacion, alimentacionTodo, vuelo, asistencia, tarifaDia, cantidadIUnidades);
-        this.nombreHotel = nombreHotel;
-        this.tipoDesayuno = tipoDesayuno;
+        setNombreHotel(nombreHotel);
+        setTipoDesayuno(tipoDesayuno);
     }
 
     public String getNombreHotel() {
@@ -25,6 +25,10 @@ public final class PaqueteTuristicoUnico extends PaqueteTuristico {
     }
 
     public void setNombreHotel(String nombreHotel) {
+        if (nombreHotel == null || nombreHotel.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del hotel no puede estar vacio");
+        }
+
         this.nombreHotel = nombreHotel;
     }
 
@@ -33,6 +37,10 @@ public final class PaqueteTuristicoUnico extends PaqueteTuristico {
     }
 
     public void setTipoDesayuno(String tipoDesayuno) {
+        if (tipoDesayuno == null) {
+            throw new IllegalArgumentException("El tipo de desayuno no puede ser nulo");
+        }
+
         this.tipoDesayuno = tipoDesayuno;
     }
 

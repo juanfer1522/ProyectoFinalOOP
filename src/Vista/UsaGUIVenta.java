@@ -444,12 +444,12 @@ public class UsaGUIVenta extends javax.swing.JFrame {
     }
 
     private Cliente pedirCliente() {
-        String tipoTexto = pedirTexto("Tipo identificacion C o N");
-        if (tipoTexto == null) {
+        Character tipo = pedirCaracter("Tipo identificacion C o N", "CN");
+        if (tipo == null) {
             return null;
         }
 
-        String numero = pedirTexto("Numero identificacion");
+        String numero = pedirNumeroIdentificacion(tipo);
         if (numero == null) {
             return null;
         }
@@ -459,12 +459,12 @@ public class UsaGUIVenta extends javax.swing.JFrame {
             return null;
         }
 
-        String email = pedirTexto("Email");
+        String email = pedirEmail("Email");
         if (email == null) {
             return null;
         }
 
-        String telefono = pedirTexto("Telefono");
+        String telefono = pedirTextoNumerico("Telefono");
         if (telefono == null) {
             return null;
         }
@@ -474,26 +474,21 @@ public class UsaGUIVenta extends javax.swing.JFrame {
             return null;
         }
 
-        Double descuento = pedirDecimal("Porcentaje descuento 0.0 a 70.0");
+        Double descuento = pedirDecimalRango("Porcentaje descuento 0.0 a 70.0", 0.0, 70.0);
         if (descuento == null) {
             return null;
         }
 
-        char tipo = tipoTexto.charAt(0);
         boolean empresa = Character.toUpperCase(tipo) == 'N';
 
         return new Cliente(tipo, numero, empresa, nombre, email, telefono, contacto, descuento);
     }
 
     private ArrayList<PaqueteTuristico> pedirPaquetes() {
-        Integer cantidad = pedirEntero("Cantidad de paquetes de la venta");
+        Integer cantidad = pedirEnteroMinimo("Cantidad de paquetes de la venta", 1);
 
         if (cantidad == null) {
             return null;
-        }
-
-        if (cantidad < 1) {
-            throw new IllegalArgumentException("Debe ingresar minimo un paquete");
         }
 
         ArrayList<PaqueteTuristico> paquetes = new ArrayList<PaqueteTuristico>();
@@ -510,44 +505,45 @@ public class UsaGUIVenta extends javax.swing.JFrame {
 
         return paquetes;
     }
-
     private PaqueteTuristico pedirPaquete(int numeroPaquete) {
         try {
-        String categoria = pedirTexto("Paquete " + numeroPaquete + ": U para unico o M para multiple");
+        Character categoria = pedirCaracter("Paquete " + numeroPaquete + ": U para unico o M para multiple", "UM");
         if (categoria == null) {
             return null;
         }
-
-        char tipoCategoria = Character.toUpperCase(categoria.charAt(0));
-
-        if (tipoCategoria != 'U' && tipoCategoria != 'M') {
-            throw new IllegalArgumentException("La categoria debe ser U o M");
-        }
+        char tipoCategoria = categoria;
 
         String codigo = pedirTexto("Codigo del paquete");
-        String nombre = pedirTexto("Nombre del paquete minimo 10 caracteres");
+        String nombre = pedirTextoMinimo("Nombre del paquete minimo 10 caracteres", 10);
         String tipologia = pedirTexto("Tipo de turismo");
-        String descripcion = pedirTexto("Descripcion");
+        String descripcion = pedirTextoMaximo("Descripcion", 500);
         String origen = pedirTexto("Origen");
-        Boolean hotel = pedirBooleano("Incluye hotel S/N");
-        Boolean alimentacion = pedirBooleano("Incluye alimentacion S/N");
-        Boolean alimentacionTodo = pedirBooleano("Alimentacion completa S/N");
-        Boolean vuelo = pedirBooleano("Incluye vuelo S/N");
-        Boolean asistencia = pedirBooleano("Incluye asistencia S/N");
-        Integer tarifaDia = pedirEntero("Tarifa por dia");
-        Integer cantidadUnidades = pedirEntero("Cantidad de unidades");
+        Boolean hotel = pedirBooleanoConDefecto("Incluye hotel S/N (Enter = S)", true);
+        Boolean alimentacion = pedirBooleanoConDefecto("Incluye alimentacion S/N (Enter = S)", true);
+        Boolean alimentacionTodo = false;
+        if (alimentacion != null && alimentacion) {
+            alimentacionTodo = pedirBooleanoConDefecto("Alimentacion completa S/N (Enter = N)", false);
+        }
+
+        Boolean vuelo = pedirBooleanoConDefecto("Incluye vuelo S/N (Enter = S)", true);
+        Boolean asistencia = pedirBooleanoConDefecto("Incluye asistencia S/N (Enter = N)", false);
+        Integer tarifaDia = pedirEnteroMinimo("Tarifa por dia", 1);
+        Integer cantidadUnidades = pedirEnteroMinimo("Cantidad de unidades", 1);
+
+        if (codigo == null || nombre == null || tipologia == null || descripcion == null
+                || origen == null || hotel == null || alimentacion == null
+                || alimentacionTodo == null || vuelo == null || asistencia == null
+                || tarifaDia == null || cantidadUnidades == null) {
+            return null;
+        }
 
         int cantidadDestinos = 1;
 
         if (tipoCategoria == 'M') {
-            Integer cantidadPedida = pedirEntero("Cantidad de destinos del paquete multiple");
+            Integer cantidadPedida = pedirEnteroMinimo("Cantidad de destinos del paquete multiple", 2);
 
             if (cantidadPedida == null) {
                 return null;
-            }
-
-            if (cantidadPedida < 2) {
-                throw new IllegalArgumentException("El paquete multiple debe tener minimo 2 destinos");
             }
 
             cantidadDestinos = cantidadPedida;
@@ -561,10 +557,10 @@ public class UsaGUIVenta extends javax.swing.JFrame {
 
         if (tipoCategoria == 'U') {
             String nombreHotel = pedirTexto("Nombre del hotel");
-            String tipoDesayuno = "";
+            String tipoDesayuno = "N/A";
 
-            if (alimentacion) {
-                tipoDesayuno = pedirTexto("Tipo de desayuno");
+            if (alimentacion && !alimentacionTodo) {
+                tipoDesayuno = pedirTextoOpcional("Tipo de desayuno (Enter = N/A)", "N/A");
             }
 
             if (nombreHotel == null || tipoDesayuno == null) {
@@ -586,7 +582,7 @@ public class UsaGUIVenta extends javax.swing.JFrame {
                 descripcion, origen, destinos, hotel, alimentacion, alimentacionTodo,
                 vuelo, asistencia, tarifaDia, cantidadUnidades);
         } catch (Exception error) {
-            JOptionPane.showMessageDialog(this, "No se pudo generar el paquete");
+            JOptionPane.showMessageDialog(this, "No se pudo generar el paquete: " + error.getMessage());
             return null;
         }
     }
@@ -596,9 +592,9 @@ public class UsaGUIVenta extends javax.swing.JFrame {
 
         for (int i = 0; i < cantidadDestinos; i++) {
             String nombreLugar = pedirTexto("Destino " + (i + 1) + ": nombre lugar");
-            Integer dias = pedirEntero("Destino " + (i + 1) + ": dias permanencia");
+            Integer dias = pedirEnteroMinimo("Destino " + (i + 1) + ": dias permanencia", 1);
             Boolean atractivosIncluidos = pedirBooleano("Atractivos incluidos S/N");
-            Integer cantidadAtractivos = pedirEntero("Cantidad de atractivos");
+            Integer cantidadAtractivos = pedirEnteroMinimo("Cantidad de atractivos", 0);
 
             if (nombreLugar == null || dias == null || atractivosIncluidos == null
                     || cantidadAtractivos == null) {
@@ -624,74 +620,274 @@ public class UsaGUIVenta extends javax.swing.JFrame {
     }
 
     private String pedirTexto(String mensaje) {
+        while (true) {
+            String dato = JOptionPane.showInputDialog(this, mensaje);
+
+            if (dato == null) {
+                areaResultados.setText("Operacion cancelada");
+                return null;
+            }
+
+            dato = dato.trim();
+
+            if (!dato.isEmpty()) {
+                return dato;
+            }
+
+            mostrarAvisoValidacion("Falta llenar el dato obligatorio: " + mensaje);
+        }
+    }
+
+    private String pedirTextoOpcional(String mensaje, String valorSiEstaVacio) {
         String dato = JOptionPane.showInputDialog(this, mensaje);
 
         if (dato == null) {
-            areaResultados.setText("cancelado¡");
+            areaResultados.setText("Operacion cancelada");
             return null;
         }
 
         dato = dato.trim();
 
         if (dato.isEmpty()) {
-            areaResultados.setText("Cancelado¡, falta un dato");
-            return null;
+            return valorSiEstaVacio;
         }
 
         return dato;
     }
 
-    private Integer pedirEntero(String mensaje) {
-        String dato = pedirTexto(mensaje);
+    private String pedirTextoMinimo(String mensaje, int minimo) {
+        while (true) {
+            String dato = pedirTexto(mensaje);
 
-        if (dato == null) {
-            return null;
+            if (dato == null) {
+                return null;
+            }
+
+            if (dato.length() >= minimo) {
+                return dato;
+            }
+
+            mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": debe tener minimo "
+                    + minimo + " caracteres");
         }
+    }
 
-        try {
-            return Integer.parseInt(dato);
-        } catch (NumberFormatException error) {
-            throw new IllegalArgumentException("Debe ingresar un numero entero");
+    private String pedirTextoMaximo(String mensaje, int maximo) {
+        while (true) {
+            String dato = pedirTexto(mensaje);
+
+            if (dato == null) {
+                return null;
+            }
+
+            if (dato.length() <= maximo) {
+                return dato;
+            }
+
+            mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": debe tener maximo "
+                    + maximo + " caracteres");
+        }
+    }
+
+    private String pedirTextoNumerico(String mensaje) {
+        while (true) {
+            String dato = pedirTexto(mensaje);
+
+            if (dato == null) {
+                return null;
+            }
+
+            if (dato.matches("\\d+")) {
+                return dato;
+            }
+
+            mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": solo debe contener numeros");
+        }
+    }
+
+    private String pedirEmail(String mensaje) {
+        while (true) {
+            String dato = pedirTexto(mensaje);
+
+            if (dato == null) {
+                return null;
+            }
+
+            if (dato.matches("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$")) {
+                return dato;
+            }
+
+            mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": debe tener formato de correo");
+        }
+    }
+
+    private String pedirNumeroIdentificacion(char tipoIdentificacion) {
+        while (true) {
+            String numero = pedirTextoNumerico("Numero identificacion");
+
+            if (numero == null) {
+                return null;
+            }
+
+            if (tipoIdentificacion == 'C' && numero.length() >= 6) {
+                return numero;
+            }
+
+            if (tipoIdentificacion == 'N' && numero.length() == 9) {
+                return numero;
+            }
+
+            if (tipoIdentificacion == 'C') {
+                mostrarAvisoValidacion("Dato mal llenado en \"Numero identificacion\": la cedula debe tener minimo 6 digitos");
+            } else {
+                mostrarAvisoValidacion("Dato mal llenado en \"Numero identificacion\": el NIT debe tener 9 digitos");
+            }
+        }
+    }
+
+    private Integer pedirEntero(String mensaje) {
+        while (true) {
+            String dato = pedirTexto(mensaje);
+
+            if (dato == null) {
+                return null;
+            }
+
+            try {
+                return Integer.parseInt(dato);
+            } catch (NumberFormatException error) {
+                mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": debe ingresar un numero entero");
+            }
+        }
+    }
+
+    private Integer pedirEnteroMinimo(String mensaje, int minimo) {
+        while (true) {
+            Integer numero = pedirEntero(mensaje);
+
+            if (numero == null) {
+                return null;
+            }
+
+            if (numero >= minimo) {
+                return numero;
+            }
+
+            mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": debe ser mayor o igual a " + minimo);
         }
     }
 
     private Double pedirDecimal(String mensaje) {
-        String dato = pedirTexto(mensaje);
+        while (true) {
+            String dato = pedirTexto(mensaje);
 
-        if (dato == null) {
-            return null;
+            if (dato == null) {
+                return null;
+            }
+
+            try {
+                return Double.parseDouble(dato);
+            } catch (NumberFormatException error) {
+                mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": debe ingresar un numero decimal");
+            }
         }
+    }
 
-        try {
-            return Double.parseDouble(dato);
-        } catch (NumberFormatException error) {
-            throw new IllegalArgumentException("Debe ingresar un numero decimal");
+    private Double pedirDecimalRango(String mensaje, double minimo, double maximo) {
+        while (true) {
+            Double numero = pedirDecimal(mensaje);
+
+            if (numero == null) {
+                return null;
+            }
+
+            if (numero >= minimo && numero <= maximo) {
+                return numero;
+            }
+
+            mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": debe estar entre "
+                    + minimo + " y " + maximo);
         }
     }
 
     private Boolean pedirBooleano(String mensaje) {
-        String dato = pedirTexto(mensaje);
+        while (true) {
+            String dato = pedirTexto(mensaje);
 
-        if (dato == null) {
-            return null;
+            if (dato == null) {
+                return null;
+            }
+
+            Boolean respuesta = convertirBooleano(dato);
+
+            if (respuesta != null) {
+                return respuesta;
+            }
+
+            mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": debe responder S o N");
         }
+    }
 
+    private Boolean pedirBooleanoConDefecto(String mensaje, boolean valorDefecto) {
+        while (true) {
+            String dato = JOptionPane.showInputDialog(this, mensaje);
+
+            if (dato == null) {
+                areaResultados.setText("Operacion cancelada");
+                return null;
+            }
+
+            dato = dato.trim();
+
+            if (dato.isEmpty()) {
+                return valorDefecto;
+            }
+
+            Boolean respuesta = convertirBooleano(dato);
+
+            if (respuesta != null) {
+                return respuesta;
+            }
+
+            mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": debe responder S o N");
+        }
+    }
+
+    private Character pedirCaracter(String mensaje, String opcionesValidas) {
+        while (true) {
+            String dato = pedirTexto(mensaje);
+
+            if (dato == null) {
+                return null;
+            }
+
+            char opcion = Character.toUpperCase(dato.charAt(0));
+
+            if (dato.length() == 1 && opcionesValidas.indexOf(opcion) >= 0) {
+                return opcion;
+            }
+
+            mostrarAvisoValidacion("Dato mal llenado en \"" + mensaje + "\": opciones validas "
+                    + opcionesValidas);
+        }
+    }
+    private Boolean convertirBooleano(String dato) {
         dato = dato.toUpperCase();
 
         if (dato.equals("S")) {
             return true;
         }
-
         if (dato.equals("N")) {
             return false;
         }
-
-        throw new IllegalArgumentException("Debe responder S o N");
+        return null;
     }
-
+    private void mostrarAvisoValidacion(String mensaje) {
+        areaResultados.setText(mensaje);
+        JOptionPane.showMessageDialog(this, mensaje);
+    }
     private String obtenerTextoVenta(Venta venta, boolean mostrarPaquetes) {
         String texto = "";
-
         texto = texto + "Numero: " + venta.getNumero() + "\n";
         texto = texto + "Fecha generacion: " + formatearFecha(venta.getFechaHoraGeneracion()) + "\n";
         texto = texto + "Fecha actualizacion: " + formatearFecha(venta.getFechaHoraActualizacion()) + "\n";
@@ -702,7 +898,6 @@ public class UsaGUIVenta extends javax.swing.JFrame {
         texto = texto + "Valor total paquetes: " + venta.calcularValorTotalPaquetes() + "\n";
         texto = texto + "Valor descuento: " + venta.calcularValorDescuento() + "\n";
         texto = texto + "Valor total pagar: " + venta.calcularValorTotalPagar() + "\n";
-
         if (mostrarPaquetes) {
             texto = texto + "Datos de paquetes:\n";
 
@@ -710,69 +905,53 @@ public class UsaGUIVenta extends javax.swing.JFrame {
                 texto = texto + obtenerTextoPaquete(venta.getSusPaquetesTuristicos().get(i));
             }
         }
-
         return texto;
     }
-
     private String obtenerTextoPaquete(PaqueteTuristico paquete) {
         String texto = "";
 
         texto = texto + "\nPaquete\n";
-
         if (paquete instanceof PaqueteTuristicoUnico) {
             texto = texto + "Categoria: Unico\n";
         } else {
             texto = texto + "Categoria: Multiple\n";
         }
-
         texto = texto + paquete + "\n";
         texto = texto + "Destinos:\n";
-
         for (int i = 0; i < paquete.getSusDestinos().size(); i++) {
             texto = texto + paquete.getSusDestinos().get(i) + "\n";
         }
-
         if (paquete instanceof PaqueteTuristicoMultiple) {
             PaqueteTuristicoMultiple multiple = (PaqueteTuristicoMultiple) paquete;
             texto = texto + "Destino inicial: " + multiple.obtenerDestinoInicial().getNombreLugar() + "\n";
             texto = texto + "Destino final: " + multiple.obtenerDestinoFinal().getNombreLugar() + "\n";
         }
-
         texto = texto + "Valor unidad: " + paquete.calcularValorUnidad() + "\n";
         texto = texto + "Valor total: " + paquete.calcularValorTotal() + "\n";
 
         return texto;
     }
-
     private String obtenerTextoClientes(ArrayList<Cliente> clientes) {
         if (clientes.isEmpty()) {
             return "No existen clientes";
         }
-
         String texto = "";
-
         for (int i = 0; i < clientes.size(); i++) {
             texto = texto + "Cliente " + (i + 1) + "\n";
             texto = texto + clientes.get(i) + "\n\n";
         }
-
         return texto;
     }
-
     private boolean esCategoria(PaqueteTuristico paquete, String categoriaPaquete) {
         String categoria = categoriaPaquete.toUpperCase();
-
         if ((categoria.equals("U") || categoria.equals("UNICO")) && paquete instanceof PaqueteTuristicoUnico) {
             return true;
         }
-
         if ((categoria.equals("M") || categoria.equals("MULTIPLE")) && paquete instanceof PaqueteTuristicoMultiple) {
             return true;
         }
-
         return false;
     }
-
     private boolean existeCliente(ArrayList<Cliente> clientes, Cliente clienteBuscado) {
         for (int i = 0; i < clientes.size(); i++) {
             Cliente cliente = clientes.get(i);
@@ -782,15 +961,12 @@ public class UsaGUIVenta extends javax.swing.JFrame {
                 return true;
             }
         }
-
         return false;
     }
-
     private String formatearFecha(java.time.LocalDateTime fecha) {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-dd-MM HH:mm:ss");
         return fecha.format(formato);
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaResultados;
     private javax.swing.JButton botonActualizar;
