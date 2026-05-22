@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit4TestClass.java to edit this template
- */
 package Modelo;
 
 import java.util.ArrayList;
@@ -9,82 +5,47 @@ import java.util.LinkedList;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Juanfer
- */
 public class PaqueteTuristicoTest {
 
-    /**
-     * Test of calcularDuracionTotalDias method, of class PaqueteTuristico.
-     */
     @Test
-    public void testCalcularDuracionTotalDias() {
-        System.out.println("Test -> calcularDuracionTotalDias");
-        PaqueteTuristico instance = new PaqueteTuristicoImpl();   
-        int expResult = 5; 
-        int result = instance.calcularDuracionTotalDias();
-        assertEquals(expResult, result);
+    public void calcularDuracionTotalDiasSumaLosDiasDeTodosLosDestinos() {
+        PaqueteTuristico paquete = new PaqueteTuristicoImpl(200000, 2, crearDestinos(4, 1));
+
+        assertEquals(5, paquete.calcularDuracionTotalDias());
     }
 
-    /**
-     * Test of calcularValorUnidad method, of class PaqueteTuristico.
-     */
     @Test
-    public void testCalcularValorUnidad() {
-        System.out.println("-> calcularValorUnidad");
-        PaqueteTuristico instance = new PaqueteTuristicoImpl();
-        
-        int expResult = 150000;
-        int result = instance.calcularValorUnidad();
-        assertEquals(expResult, result);
+    public void calcularValorTotalMultiplicaValorUnidadPorCantidadUnidades() {
+        PaqueteTuristico paquete = new PaqueteTuristicoImpl(200000, 2, crearDestinos(4, 1));
+
+        assertEquals(400000, paquete.calcularValorTotal());
     }
 
-    /**
-     * Test of calcularValorTotal method, of class PaqueteTuristico.
-     */
-    @Test
-    public void testCalcularValorTotal() {
-        System.out.println("calcularValorTotal");
-        PaqueteTuristico instance = new PaqueteTuristicoImpl();
-        int expResult = 300000;
-        int result = instance.calcularValorTotal();
-        assertEquals(expResult, result);
+    private static ArrayList<Destino> crearDestinos(int... diasDestinos) {
+        ArrayList<Destino> destinos = new ArrayList<>();
+        LinkedList<String> atractivos = new LinkedList<>();
+        atractivos.add("Paseo en chiva");
+
+        for (int i = 0; i < diasDestinos.length; i++) {
+            destinos.add(new Destino("Medellin " + (i + 1), diasDestinos[i], atractivos, true));
+        }
+
+        return destinos;
     }
 
-   
-    public class PaqueteTuristicoImpl extends PaqueteTuristico {
+    private static class PaqueteTuristicoImpl extends PaqueteTuristico {
+        private final int valorUnidad;
 
-        public PaqueteTuristicoImpl() {
-            super("12345678910", "Juan Fernando Cabrera", "Ecológico", "Des", "Medellin", 
-                  crearDestinosPrueba(), false, false, false, false, false, 50000, 2);
+        PaqueteTuristicoImpl(int valorUnidad, int cantidadUnidades, ArrayList<Destino> destinos) {
+            super("222134", "Paquete base integrado", "Cultural",
+                    "Descripcion de la prueba unitaria", "Cali", destinos,
+                    true, true, false, true, true, 100000, cantidadUnidades);
+            this.valorUnidad = valorUnidad;
         }
 
         @Override
         public int calcularValorUnidad() {
-            return 150000;
-        }
-        
-        @Override
-        public int calcularDuracionTotalDias() {
-            return 5; 
+            return valorUnidad;
         }
     }
-    
-   
-    private static ArrayList<Destino> crearDestinosPrueba() {
-        ArrayList<Destino> lista = new ArrayList<>();
-        
-        
-        LinkedList<String> cosasPorHacer = new LinkedList<>();
-        cosasPorHacer.add("Caminar");
-        
-        
-        Destino destinoFalso = new Destino("Lugar de Prueba", 5, cosasPorHacer, true);
-        
-        lista.add(destinoFalso); 
-        return lista;
-    }
-    // </editor-fold>
-
 }

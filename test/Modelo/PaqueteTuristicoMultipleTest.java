@@ -5,71 +5,51 @@ import java.util.LinkedList;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Juanfer
- */
 public class PaqueteTuristicoMultipleTest {
-    
-    public PaqueteTuristicoMultipleTest() {
+
+    @Test
+    public void calcularValorUnidadSumaValorBaseMasIncrementoPorDestinos() {
+        PaqueteTuristicoMultiple paquete = crearPaquete(100000, 3, 2);
+
+        assertEquals(502000, paquete.calcularValorUnidad());
     }
 
-    /**
-     * Test of calcularValorUnidad method, of class PaqueteTuristicoMultiple.
-     */
     @Test
-    public void testCalcularValorUnidad() {
-        System.out.println("calcularValorUnidad");
-        
-        ArrayList<Destino> listaDestinos = new ArrayList<>();
-        LinkedList<String> actividades = new LinkedList<>();
-        actividades.add("Actividad de Prueba");
-        listaDestinos.add(new Destino("Destino Inicial Eje Cafetero", 3, actividades, true));
-        listaDestinos.add(new Destino("Destino Final Medellin Antioquia", 2, actividades, true));
-        
-        PaqueteTuristicoMultiple instance = new PaqueteTuristicoMultiple("Maleta de viaje ejecutiva premium", "PKG-MULT-999", "Gran Tour Multidestino Colombia Autentica", "Eco-Turismo y Aventura Cultural", "Recorrido completo por multiples destinos de Colombia con guia personalizado", "Cali Valle del Cauca", listaDestinos, true, true, false, true, true, 100000, 2);
-        
-        int expResult = 502000; 
-        int result = instance.calcularValorUnidad();
-        assertEquals(expResult, result);
+    public void obtenerDestinoInicialRetornaPrimerDestino() {
+        ArrayList<Destino> destinos = crearDestinos(3, 2);
+        PaqueteTuristicoMultiple paquete = crearPaquete(100000, destinos);
+
+        assertSame(destinos.get(0), paquete.obtenerDestinoInicial());
     }
 
-    /**
-     * Test of obtenerDestinoInicial method, of class PaqueteTuristicoMultiple.
-     */
     @Test
-    public void testObtenerDestinoInicial() {
-        System.out.println("obtenerDestinoInicial");
-        ArrayList<Destino> listaDestinos = new ArrayList<>();
-        LinkedList<String> actividades = new LinkedList<>();
-        actividades.add("Monumentos Historicos");
-        Destino destinoInicial = new Destino("Destino Inicial Cali, Valle del Cauca", 3, actividades, true);
-        listaDestinos.add(destinoInicial);
-        listaDestinos.add(new Destino("Destino Final Medellin Antioquia", 2, actividades, true));
-        
-        PaqueteTuristicoMultiple instance = new PaqueteTuristicoMultiple("Maleta de viaje ejecutiva", "000AZ22", "Tour ciudades principales", "Recorrido cultural", "Recorrido completo por ciudades  de Colombia ", "Cali Valle del Cauca", listaDestinos, true, true, false, true, true, 100000, 2);
-        
-        Destino result = instance.obtenerDestinoInicial();
-        assertEquals(destinoInicial, result);
+    public void obtenerDestinoFinalRetornaUltimoDestino() {
+        ArrayList<Destino> destinos = crearDestinos(3, 2, 4);
+        PaqueteTuristicoMultiple paquete = crearPaquete(100000, destinos);
+
+        assertSame(destinos.get(2), paquete.obtenerDestinoFinal());
     }
 
-    /**
-     * Test of obtenerDestinoFinal method, of class PaqueteTuristicoMultiple.
-     */
-    @Test
-    public void testObtenerDestinoFinal() {
-        System.out.println("obtenerDestinoFinal");
-        
-        ArrayList<Destino> listaDestinos = new ArrayList<>();
-        LinkedList<String> actividades = new LinkedList<>();
-        actividades.add("Monumentos Historicos");
-        Destino destinoFinal = new Destino("Destino Final Medellin Antioquia", 2, actividades, true);
-        listaDestinos.add(new Destino("Destino Inicial Cali, Valle del cauca", 3, actividades, true));
-        listaDestinos.add(destinoFinal);
-        
-        PaqueteTuristicoMultiple instance = new PaqueteTuristicoMultiple("Maleta de viaje ejecutiva", "000AZ2223", "Tour multidestino ciudades principales", "Monumentos historicos", "Recorrido completo por multiples destinos de Colombia con guia personalizado", "Cali Valle del Cauca", listaDestinos, true, true, false, true, true, 100000, 2);
-        
-        Destino result = instance.obtenerDestinoFinal();
-        assertEquals(destinoFinal, result);
+    private static PaqueteTuristicoMultiple crearPaquete(int tarifaDia, int... diasDestinos) {
+        return crearPaquete(tarifaDia, crearDestinos(diasDestinos));
+    }
+
+    private static PaqueteTuristicoMultiple crearPaquete(int tarifaDia, ArrayList<Destino> destinos) {
+        return new PaqueteTuristicoMultiple("Maleta Economica", "00033255",
+                "Paquete multiple Colombia", "Paseo",
+                "Descripcion de actividades de paquete multiple", "Cali", destinos,
+                true, true, false, true, true, tarifaDia, 2);
+    }
+
+    private static ArrayList<Destino> crearDestinos(int... diasDestinos) {
+        ArrayList<Destino> destinos = new ArrayList<>();
+        LinkedList<String> atractivos = new LinkedList<>();
+        atractivos.add("Tour monumentos");
+
+        for (int i = 0; i < diasDestinos.length; i++) {
+            destinos.add(new Destino("Destino multiple " + (i + 1), diasDestinos[i], atractivos, true));
+        }
+
+        return destinos;
     }
 }

@@ -5,31 +5,27 @@ import java.util.LinkedList;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Juanfer
- */
 public class PaqueteTuristicoUnicoTest {
-    
-    public PaqueteTuristicoUnicoTest() {
+
+    @Test
+    public void calcularValorUnidadMultiplicaTarifaPorDuracionTotal() {
+        PaqueteTuristicoUnico paquete = new PaqueteTuristicoUnico("Hotel hilton", "Criollo",
+                "0021", "Paquete unico ", "Cultural",
+                "Descripcion de paquete unico", "Cali",
+                crearDestinos(2, 3), true, true, false, true, true, 120000, 1);
+
+        assertEquals(600000, paquete.calcularValorUnidad());
     }
 
-    /**
-     * Test of calcularValorUnidad method, of class PaqueteTuristicoUnico.
-     */
-    @Test
-    public void testCalcularValorUnidad() {
-        System.out.println("calcularValorUnidad");
-        
-        
-        ArrayList<Destino> listaDestinos = new ArrayList<>();
-        LinkedList<String> actividades = new LinkedList<>();
-        actividades.add("Recorrido cultural guiado");
-        listaDestinos.add(new Destino("Cartagena", 4, actividades, true));
-        int tarifaDiaria = 150000;
-        PaqueteTuristicoUnico instance = new PaqueteTuristicoUnico("Hotel Hilton", "Desayuno Tipico", "002123", "Paquete Vacacional Premium Cartagena", "Turismo cultural", "Chiva rumbera", "Cali Valle del Cauca", listaDestinos, true, true, false, true, true, tarifaDiaria, 1);
-        int expResult = 600000; 
-        int result = instance.calcularValorUnidad();
-        assertEquals(expResult, result);
+    private static ArrayList<Destino> crearDestinos(int... diasDestinos) {
+        ArrayList<Destino> destinos = new ArrayList<>();
+        LinkedList<String> atractivos = new LinkedList<>();
+        atractivos.add("Tour historico");
+
+        for (int i = 0; i < diasDestinos.length; i++) {
+            destinos.add(new Destino("Unico destino " + (i + 1), diasDestinos[i], atractivos, true));
+        }
+
+        return destinos;
     }
 }
